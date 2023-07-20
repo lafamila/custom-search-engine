@@ -7,5 +7,5 @@ def admin_session_check(func):
         if "member" in session:
             return func(*args, **kwargs)
         else:
-            return redirect('/login')
+            return redirect('/admin/login')
     return wrap
