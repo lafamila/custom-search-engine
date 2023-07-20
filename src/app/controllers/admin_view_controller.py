@@ -17,7 +17,7 @@ def login_page():
 def setting_page():
     return render_template('/admin/setting.html')
 
-@bp.route('/logout', methods=['POST'])
+@bp.route('/logout')
 @admin_helper.admin_session_clear
 def logout_page():
     return redirect('/admin/login')

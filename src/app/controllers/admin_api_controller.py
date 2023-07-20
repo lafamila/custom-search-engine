@@ -42,7 +42,7 @@ def join():
         return jsonify({"status" : True, "message":"성공적으로 가입되었습니다."})
 
 
-@bp.route('/logout', methods=['POST'])
+@bp.route('/logout', methods=['GET','POST'])
 @admin_helper.admin_session_clear
 def logout_page():
     return make_response(json.dumps(dict()), 200)
