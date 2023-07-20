@@ -2,67 +2,141 @@
 {% block statics %}
 <link rel="stylesheet" type="text/css" href="/static/css/admin/login.css">
 <script src="/static/js/admin/login.js"></script>
-
+<script>
+   $(document).on("click", "#login", function(e){
+      $.ajax({
+         url : '/api/admin/login',
+         method : 'POST',
+         data : new FormData($('#loginForm')[0]),
+         dataType: 'json',
+         contentType: false,
+         processData: false,
+         success: function(pResult){
+            if(pResult.status){
+               $(e.target).trigger("success");
+            }
+            else{
+               alert(pResult.message);
+            }
+         },
+         error: function(pResult){
+            alert("문제가 발생했습니다. 다시 시도해주세요.");
+         }
+      })
+   });
+   $(document).on("click", "#join", function(e){
+      $.ajax({
+         url : '/api/admin/join',
+         method : 'POST',
+         data : new FormData($('#joinForm')[0]),
+         dataType: 'json',
+         contentType: false,
+         processData: false,
+         validate: function() {
+            var new_user_id = $('#joinForm').find(`[name="new_user_id"]`).val();
+            var new_user_pw = $('#joinForm').find(`[name="new_user_pw"]`).val();
+            var new_user_pw_re = $('#joinForm').find(`[name="new_user_pw_re"]`).val();
+            if(new_user_id.length < 4){
+               alert("아이디는 최소 4글자 이상이어야 합니다.");
+               $('#joinForm').find(`[name="new_user_id"]`).focus();
+               return false;
+            }
+            if(new_user_pw != new_user_pw_re){
+               alert("비밀번호가 일치하지 않습니다.");
+               $('#joinForm').find(`[name="new_user_pw_re"]`).focus();
+               return false;
+            }
+            if(new_user_pw.length < 6){
+               alert("비밀번호는 최소 6글자 이상이어야 합니다.");
+               $('#joinForm').find(`[name="new_user_pw"]`).focus();
+               return false;
+            }
+            return true;
+         },
+         success: function(pResult){
+            if(pResult.status){
+               if(confirm("성공적으로 가입되었습니다.\n가입된 정보로 로그인하시겠습니까?")){
+                  var new_user_id = $('#joinForm').find(`[name="new_user_id"]`).val();
+                  var new_user_pw = $('#joinForm').find(`[name="new_user_pw"]`).val();
+                  $('#loginForm').find(`[name="user_id"]`).val(new_user_id);
+                  $('#loginForm').find(`[name="user_pw"]`).val(new_user_pw);
+                  $('#loginForm').find("#login").trigger("click");
+               }
+               else{
+                  $('#joinForm').find(".shape").trigger("click");
+               }
+            }
+            else{
+               alert(pResult.message);
+            }
+         },
+         error: function(pResult){
+            alert("문제가 발생했습니다. 다시 시도해주세요.");
+         }
+      })
+   });
+</script>
 {% endblock %}
 {% block content %}
-
 <div class="materialContainer">
 
+   <form id="loginForm" onsubmit="return false;">
+      <div class="box">
 
-   <div class="box">
+         <div class="title">LOGIN</div>
 
-      <div class="title">LOGIN</div>
+         <div class="input">
+            <label for="user_id">ID</label>
+            <input type="text" name="user_id" id="user_id" autocomplete="on">
+            <span class="spin"></span>
+         </div>
 
-      <div class="input">
-         <label for="name">Username</label>
-         <input type="text" name="name" id="name">
-         <span class="spin"></span>
+         <div class="input">
+            <label for="user_pw">Password</label>
+            <input type="password" name="user_pw" id="user_pw" autocomplete="on">
+            <span class="spin"></span>
+         </div>
+
+         <div class="button login">
+            <button id="login" data-url="/admin/setting"><span>GO</span> <i class="fa fa-check"></i></button>
+         </div>
+
+         <a href="" class="pass-forgot">Forgot your password?</a>
+
       </div>
+   </form>
+   <form id="joinForm" onsubmit="return false;">
 
-      <div class="input">
-         <label for="pass">Password</label>
-         <input type="password" name="pass" id="pass">
-         <span class="spin"></span>
+      <div class="overbox">
+         <div class="material-button alt-2"><span class="shape"></span></div>
+
+         <div class="title">REGISTER</div>
+
+         <div class="input">
+            <label for="new_user_id">ID</label>
+            <input type="text" name="new_user_id" id="new_user_id" autocomplete="off">
+            <span class="spin"></span>
+         </div>
+
+         <div class="input">
+            <label for="new_user_pw">Password</label>
+            <input type="password" name="new_user_pw" id="new_user_pw" autocomplete="off">
+            <span class="spin"></span>
+         </div>
+
+         <div class="input">
+            <label for="new_user_pw_re">Repeat Password</label>
+            <input type="password" name="new_user_pw_re" id="new_user_pw_re" autocomplete="off">
+            <span class="spin"></span>
+         </div>
+
+         <div class="button">
+            <button id="join" data-url="/admin/setting"><span>NEXT</span></button>
+         </div>
+
+
       </div>
-
-      <div class="button login">
-         <button><span>GO</span> <i class="fa fa-check"></i></button>
-      </div>
-
-      <a href="" class="pass-forgot">Forgot your password?</a>
-
-   </div>
-
-   <div class="overbox">
-      <div class="material-button alt-2"><span class="shape"></span></div>
-
-      <div class="title">REGISTER</div>
-
-      <div class="input">
-         <label for="regname">Username</label>
-         <input type="text" name="regname" id="regname">
-         <span class="spin"></span>
-      </div>
-
-      <div class="input">
-         <label for="regpass">Password</label>
-         <input type="password" name="regpass" id="regpass">
-         <span class="spin"></span>
-      </div>
-
-      <div class="input">
-         <label for="reregpass">Repeat Password</label>
-         <input type="password" name="reregpass" id="reregpass">
-         <span class="spin"></span>
-      </div>
-
-      <div class="button">
-         <button><span>NEXT</span></button>
-      </div>
-
-
-   </div>
-
+   </form>
 </div>
 
 {% endblock %}

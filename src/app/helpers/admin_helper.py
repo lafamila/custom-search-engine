@@ -9,3 +9,10 @@ def admin_session_check(func):
         else:
             return redirect('/admin/login')
     return wrap
+
+def admin_session_clear(func):
+    @wraps(func)
+    def wrap(*args, **kwargs):
+        session.clear()
+        return func(*args, **kwargs)
+    return wrap

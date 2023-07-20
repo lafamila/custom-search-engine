@@ -30,7 +30,7 @@ $(function() {
       }
    });
 
-   $(".button").click(function(e) {
+   $(".button").on("success", function(e) {
       var pX = e.pageX,
          pY = e.pageY,
          oX = parseInt($(this).offset().left),
@@ -45,6 +45,10 @@ $(function() {
 
       }, 600);
       $("button", this).addClass('active');
+      var url = $(e.target).data("url");
+      setTimeout(function(){
+         location.replace(url);
+      }, 800);
    })
 
    $(".alt-2").click(function() {
