@@ -217,6 +217,10 @@
   font-size: 18px;
   color: rgba(0, 0, 0, 0.2);
 }
+.button.login button:focus {
+  border: 3px solid #ED2553;
+  outline-width: 0;
+}
 .button button {
   width: 100%;
   line-height: 64px;
